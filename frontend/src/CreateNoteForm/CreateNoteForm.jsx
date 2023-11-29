@@ -1,6 +1,25 @@
 import React, { useState, useEffect } from "react";
 
 export const CreateNoteForm = () => {
+    // Create Note method
+    async function createNote() {
+        let data = {};
+        data.note = document.getElementById("txtNote").value;
+        // data.category = document.getElementById("txtCategory").value;
+        data.isArchived = false;
+
+        const request = await fetch("http://localhost:8080/api/notes", {
+            method: "POST",
+            headers: {
+                Accept: "application/json",
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(data),
+        });
+
+        location.reload();
+    }
+
     return (
         <>
             <div className="accordion" id="accordionExample">
@@ -60,7 +79,7 @@ export const CreateNoteForm = () => {
                                 </div>
                                 */}
 
-                                <div className="form-group">
+                                <div className="form-group mt-3">
                                     <button
                                         className="btn btn-primary"
                                         onClick={createNote}
@@ -76,22 +95,3 @@ export const CreateNoteForm = () => {
         </>
     );
 };
-
-// Create Note
-async function createNote() {
-    let data = {};
-    data.note = document.getElementById("txtNote").value;
-    data.category = document.getElementById("txtCategory").value;
-    data.isArchived = false;
-
-    const request = await fetch("http://localhost:8080/api/notes", {
-        method: "POST",
-        headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-    });
-
-    location.reload();
-}

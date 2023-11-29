@@ -4,11 +4,6 @@ import { CreateNoteForm } from "../CreateNoteForm";
 import { EditModal } from "../EditModal";
 
 export const App = () => {
-    const [notes, setNotes] = useState([]);
-    const [showUnarchived, setShowUnarchived] = useState(true);
-    const [showArchived, setShowArchived] = useState(false);
-    const [currentModalId, setCurrentModalId] = useState(0);
-
     return (
         <>
             <div className="container-fluid">
