@@ -1,6 +1,12 @@
 import React, { useState, useEffect } from "react";
 
-export const NoteTable = ({ notes, setNotes }) => {
+export const NoteTable = ({
+    notes,
+    setNotes,
+    category,
+    originalNotes,
+    setOriginalNotes,
+}) => {
     const [showUnarchived, setShowUnarchived] = useState(true);
     const [showArchived, setShowArchived] = useState(false);
 
@@ -12,6 +18,21 @@ export const NoteTable = ({ notes, setNotes }) => {
     // Archived Checkbox
     const handleToggleArchived = () => {
         setShowArchived((prev) => !prev);
+    };
+
+    // Filter between notes
+    const filterNotes = () => {
+        let selectedCat = document.getElementById("txtNoteCategory").value;
+        // If selected cat is different to  NCS, then filter, else, bring original notes
+        if (selectedCat !== "No Category Selected") {
+            // Filter Notes based on Cat
+            const updatedElements = originalNotes.filter(
+                (note) => note.category === selectedCat
+            );
+            setNotes(updatedElements);
+        } else {
+            setNotes(originalNotes);
+        }
     };
 
     // Listens to showArchived and showUnarchived checkboxes
@@ -43,6 +64,7 @@ export const NoteTable = ({ notes, setNotes }) => {
     }, [showArchived, showUnarchived, notes]);
 
     // Get all notes from API
+
     const fetchNotes = async () => {
         const request = await fetch("http://localhost:8080/api/notes", {
             method: "GET",
@@ -54,6 +76,7 @@ export const NoteTable = ({ notes, setNotes }) => {
 
         const notesData = await request.json();
         setNotes(notesData);
+        setOriginalNotes(notesData);
         setShowUnarchived(true); // Set showUnarchived to true after fetching notes
     };
 
@@ -100,6 +123,20 @@ export const NoteTable = ({ notes, setNotes }) => {
                         Archived Notes
                     </label>
                 </div>
+                <div className="form-group mt-3">
+                    <select
+                        className="custom-select custom-select-lg mb-3"
+                        id="txtNoteCategory"
+                        onChange={filterNotes}
+                    >
+                        <option defaultValue={"No Category"}>
+                            No Category Selected
+                        </option>
+                        {category.map((cats) => (
+                            <CategoryRowSelect key={cats.category} cat={cats} />
+                        ))}
+                    </select>
+                </div>
                 <div className="table-responsive">
                     <table
                         className="table table-bordered"
@@ -111,6 +148,7 @@ export const NoteTable = ({ notes, setNotes }) => {
                             <tr>
                                 <th>ID</th>
                                 <th>Note</th>
+                                <th>Category</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
@@ -131,6 +169,7 @@ export const NoteTable = ({ notes, setNotes }) => {
                                         note={note}
                                         notes={notes}
                                         setNotes={setNotes}
+                                        setOriginalNotes={setOriginalNotes}
                                     />
                                 ))
                             )}
@@ -142,7 +181,11 @@ export const NoteTable = ({ notes, setNotes }) => {
     );
 };
 
-const NoteRow = ({ note, notes, setNotes }) => {
+const CategoryRowSelect = ({ cat }) => (
+    <option value={`${cat.category}`}>{cat.category}</option>
+);
+
+const NoteRow = ({ note, notes, setNotes, setOriginalNotes }) => {
     // Create Method is in Create Note Form component
 
     // Delete Method
@@ -160,6 +203,8 @@ const NoteRow = ({ note, notes, setNotes }) => {
 
         // Update list
         setNotes(updatedElements);
+        setOriginalNotes(notes);
+
         alert("Removed successfully");
     };
 
@@ -181,24 +226,29 @@ const NoteRow = ({ note, notes, setNotes }) => {
                     : note
             )
         );
+
+        setOriginalNotes(notes);
     };
 
     // Update note logic is in Edit Modal component
 
     return (
         <tr
-            className={note.isArchived ? "archived" : "unarchived"}
+            className={`${note.isArchived ? "archived" : "unarchived"} ${
+                note.category
+            }-category`}
             id={`tableNoteId-${note.id}`}
         >
             <td>{note.id}</td>
             <td>{note.note}</td>
+            <td>{note.category}</td>
             <td>
                 <button
                     className="btn btn-danger mr-2"
                     onClick={() => deleteNote(note.id)}
                 >
                     Delete
-                </button>
+                </button>{" "}
                 <button
                     className="btn btn-primary mr-2"
                     data-bs-toggle="modal"
@@ -207,7 +257,7 @@ const NoteRow = ({ note, notes, setNotes }) => {
                     data-bs-id={note.id}
                 >
                     Edit
-                </button>
+                </button>{" "}
                 <button
                     className="btn btn-secondary"
                     onClick={() => archiveNote(note.id)}

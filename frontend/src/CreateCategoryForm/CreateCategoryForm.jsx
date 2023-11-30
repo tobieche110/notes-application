@@ -59,7 +59,7 @@ export const CreateCategoryForm = ({ category, setCategories }) => {
                         >
                             <div className="card-header py-3">
                                 <h6 className="m-0 font-weight-bold text-primary">
-                                    Add a Category
+                                    Add or Delete Categories
                                 </h6>
                             </div>
                         </button>
@@ -89,10 +89,10 @@ export const CreateCategoryForm = ({ category, setCategories }) => {
                                         onClick={createCategory}
                                     >
                                         Create Category!
-                                    </button>
+                                    </button>{" "}
                                     <button
                                         type="button"
-                                        className="btn btn-seccondary"
+                                        className="btn btn-secondary"
                                         data-bs-toggle="modal"
                                         data-bs-target="#exampleModal"
                                     >
@@ -126,10 +126,10 @@ export const CreateCategoryForm = ({ category, setCategories }) => {
                             ></button>
                         </div>
                         <div className="modal-body">
-                            {category.map((cat) => (
+                            {category.map((cats) => (
                                 <CategoryRow
-                                    key={cat.id}
-                                    cat={cat}
+                                    key={cats.id}
+                                    cat={cats}
                                     category={category}
                                     setCategories={setCategories}
                                 />
@@ -155,7 +155,7 @@ const CategoryRow = ({ cat, category, setCategories }) => {
     // Delete Method
     const deleteCategory = async (id) => {
         const request = await fetch(
-            "http://localhost:8080/api/categories/" + id,
+            "http://localhost:8080/api/category/" + id,
             {
                 method: "DELETE",
                 headers: {
@@ -170,7 +170,6 @@ const CategoryRow = ({ cat, category, setCategories }) => {
 
         // Update list
         setCategories(updatedElements);
-        alert("Removed successfully");
     };
 
     return (

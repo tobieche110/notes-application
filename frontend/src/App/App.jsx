@@ -7,6 +7,7 @@ import { CreateCategoryForm } from "../CreateCategoryForm";
 export const App = () => {
     const [notes, setNotes] = useState([]);
     const [category, setCategories] = useState([]);
+    const [originalNotes, setOriginalNotes] = useState([]);
 
     return (
         <>
@@ -20,13 +21,29 @@ export const App = () => {
                     You can also sort them by category using the dropdown menu!
                 </p>
 
-                <CreateNoteForm notes={notes} setNotes={setNotes} />
+                <CreateNoteForm
+                    notes={notes}
+                    setNotes={setNotes}
+                    category={category}
+                    setOriginalNotes={setOriginalNotes}
+                />
                 <CreateCategoryForm
                     category={category}
                     setCategories={setCategories}
                 />
-                <NoteTable notes={notes} setNotes={setNotes} />
-                <EditModal notes={notes} setNotes={setNotes} />
+                <NoteTable
+                    notes={notes}
+                    setNotes={setNotes}
+                    category={category}
+                    originalNotes={originalNotes}
+                    setOriginalNotes={setOriginalNotes}
+                />
+                <EditModal
+                    notes={notes}
+                    setNotes={setNotes}
+                    originalNotes={originalNotes}
+                    setOriginalNotes={setOriginalNotes}
+                />
             </div>
         </>
     );

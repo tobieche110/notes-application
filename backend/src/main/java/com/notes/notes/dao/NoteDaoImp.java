@@ -40,8 +40,9 @@ public class NoteDaoImp implements NoteDao{
     }
 
     @Override
-    public void create(Note note) {
+    public Note create(Note note) {
         entityManager.merge(note);
+        return getOneNote(note.getId());
     }
 
     @Override

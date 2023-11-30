@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 
-export const EditModal = ({ notes, setNotes }) => {
+export const EditModal = ({ notes, setNotes, originalNotes, setOriginalNotes }) => {
     const [currentModalId, setCurrentModalId] = useState(0);
 
     // Modal opening
@@ -22,7 +22,6 @@ export const EditModal = ({ notes, setNotes }) => {
         };
     }, []);
 
-    // Update Note
     const updateNote = async () => {
         let data = {};
         data.id = currentModalId;
@@ -36,18 +35,20 @@ export const EditModal = ({ notes, setNotes }) => {
             },
             body: JSON.stringify(data),
         });
+        
+        setNotes(notes.map(element =>
+            element.id === parseInt(data.id, 10) ? { ...element, note: data.note } : element
+        ));
 
-        setNotes((prevNotes) =>
-            prevNotes.map((current) =>
-                current.id === currentModalId
-                    ? { ...current, note: data.note }
-                    : current
-            )
-        );
-
+        setOriginalNotes(notes);
         console.log(notes);
-        alert("Edited successfully");
+        console.log(originalNotes);
     };
+
+    useEffect(() => {
+        console.log(notes);
+        console.log(originalNotes);
+    }, [notes]);
 
     return (
         <div

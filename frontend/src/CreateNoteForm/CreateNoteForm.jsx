@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
 
-export const CreateNoteForm = ({ notes, setNotes }) => {
+export const CreateNoteForm = ({ notes, setNotes, category, setOriginalNotes}) => {
     // Create Note method
     const createNote = async (event) => {
         event.preventDefault(); // this line is to not refresh the page by default
         let data = {};
         data.note = document.getElementById("txtNote").value;
-        // data.category = document.getElementById("txtCategory").value;
+        data.category = document.getElementById("txtCategory").value;
         data.isArchived = false;
 
         const request = await fetch("http://localhost:8080/api/notes", {
@@ -23,6 +23,7 @@ export const CreateNoteForm = ({ notes, setNotes }) => {
 
         // Update notes list
         setNotes((prevNotes) => [...prevNotes, responseData]);
+        setOriginalNotes(notes);
 
         alert("Created successfully");
     };
@@ -66,25 +67,22 @@ export const CreateNoteForm = ({ notes, setNotes }) => {
                                     ></textarea>
                                 </div>
 
-                                {/*
                                 <div className="form-group mt-3">
                                     <select
                                         className="custom-select custom-select-lg mb-3"
                                         id="txtCategory"
                                     >
-                                        <option selected>
-                                            Select a category for your Note
+                                        <option defaultValue={"No Category"}>
+                                            No Category
                                         </option>
-                                        <option value="entertainment">
-                                            Entertainment
-                                        </option>
-                                        <option value="work">Work</option>
-                                        <option value="studies">Studies</option>
-                                        <option value="plans">Plans</option>
-                                        <option value="other">Other</option>
+                                        {category.map((cats) => (
+                                            <CategoryRowSelect
+                                                key={cats.category}
+                                                cat={cats}
+                                            />
+                                        ))}
                                     </select>
                                 </div>
-                                */}
 
                                 <div className="form-group mt-3">
                                     <button
@@ -102,3 +100,7 @@ export const CreateNoteForm = ({ notes, setNotes }) => {
         </>
     );
 };
+
+const CategoryRowSelect = ({ cat }) => (
+    <option value={`${cat.category}`}>{cat.category}</option>
+);

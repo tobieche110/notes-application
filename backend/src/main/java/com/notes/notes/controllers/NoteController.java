@@ -28,8 +28,8 @@ public class NoteController{
 
     // Create a note
     @RequestMapping(value = "api/notes", method = RequestMethod.POST)
-    public void createNote(@RequestBody Note note){
-        noteDao.create(note);
+    public Note createNote(@RequestBody Note note){
+        return noteDao.create(note);
     }
 
     // Delete a note
