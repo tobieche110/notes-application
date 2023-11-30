@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
 
-export const CreateNoteForm = () => {
+export const CreateNoteForm = ({ notes, setNotes }) => {
     // Create Note method
-    async function createNote() {
+    const createNote = async (event) => {
+        event.preventDefault(); // this line is to not refresh the page by default
         let data = {};
         data.note = document.getElementById("txtNote").value;
         // data.category = document.getElementById("txtCategory").value;
@@ -17,8 +18,14 @@ export const CreateNoteForm = () => {
             body: JSON.stringify(data),
         });
 
-        location.reload();
-    }
+        // waits for server response
+        const responseData = await request.json();
+
+        // Update notes list
+        setNotes((prevNotes) => [...prevNotes, responseData]);
+
+        alert("Created successfully");
+    };
 
     return (
         <>

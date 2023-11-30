@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from "react";
 
-export const NoteTable = () => {
+export const NoteTable = ({ notes, setNotes }) => {
     const [showUnarchived, setShowUnarchived] = useState(true);
     const [showArchived, setShowArchived] = useState(false);
-    const [notes, setNotes] = useState([]);
 
     // Activated Checkbox
     const handleToggleUnarchived = () => {
@@ -41,7 +40,7 @@ export const NoteTable = () => {
             unarchivedRows.forEach((row) => (row.style.display = "none"));
             archivedRows.forEach((row) => (row.style.display = "none"));
         }
-    }, [showArchived, showUnarchived, notes]); // Added 'notes' as dependency
+    }, [showArchived, showUnarchived, notes]);
 
     // Get all notes from API
     const fetchNotes = async () => {
@@ -127,7 +126,12 @@ export const NoteTable = () => {
                                 </tr>
                             ) : (
                                 notes.map((note) => (
-                                    <NoteRow key={note.id} note={note} />
+                                    <NoteRow
+                                        key={note.id}
+                                        note={note}
+                                        notes={notes}
+                                        setNotes={setNotes}
+                                    />
                                 ))
                             )}
                         </tbody>
@@ -138,7 +142,7 @@ export const NoteTable = () => {
     );
 };
 
-const NoteRow = ({ note }) => {
+const NoteRow = ({ note, notes, setNotes }) => {
     // Create Method is in Create Note Form component
 
     // Delete Method
@@ -151,9 +155,12 @@ const NoteRow = ({ note }) => {
             },
         });
 
-        tableNoteId = "tableNoteId-" + note.id;
-        console.log(tableNoteId);
-        document.getElementById(tableNoteId).remove();
+        // Delete note from list
+        const updatedElements = notes.filter((note) => note.id !== id);
+
+        // Update list
+        setNotes(updatedElements);
+        alert("Removed successfully");
     };
 
     // Archive note method
@@ -166,7 +173,14 @@ const NoteRow = ({ note }) => {
             },
         });
 
-        location.reload();
+        // Updates notes list
+        setNotes((prevNotes) =>
+            prevNotes.map((note) =>
+                note.id === id
+                    ? { ...note, isArchived: !note.isArchived }
+                    : note
+            )
+        );
     };
 
     // Update note logic is in Edit Modal component

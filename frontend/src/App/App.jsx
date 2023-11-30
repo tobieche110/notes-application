@@ -2,8 +2,12 @@ import React, { useState, useEffect } from "react";
 import { NoteTable } from "../NoteTable";
 import { CreateNoteForm } from "../CreateNoteForm";
 import { EditModal } from "../EditModal";
+import { CreateCategoryForm } from "../CreateCategoryForm";
 
 export const App = () => {
+    const [notes, setNotes] = useState([]);
+    const [category, setCategories] = useState([]);
+
     return (
         <>
             <div className="container-fluid">
@@ -16,9 +20,13 @@ export const App = () => {
                     You can also sort them by category using the dropdown menu!
                 </p>
 
-                <CreateNoteForm />
-                <NoteTable />
-                <EditModal />
+                <CreateNoteForm notes={notes} setNotes={setNotes} />
+                <CreateCategoryForm
+                    category={category}
+                    setCategories={setCategories}
+                />
+                <NoteTable notes={notes} setNotes={setNotes} />
+                <EditModal notes={notes} setNotes={setNotes} />
             </div>
         </>
     );

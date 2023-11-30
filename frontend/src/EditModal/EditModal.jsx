@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 
-export const EditModal = () => {
+export const EditModal = ({ notes, setNotes }) => {
     const [currentModalId, setCurrentModalId] = useState(0);
 
     // Modal opening
@@ -17,7 +17,6 @@ export const EditModal = () => {
 
         updateModal.addEventListener("show.bs.modal", showModalHandler);
 
-        // Limpia el event listener cuando el componente se desmonta
         return () => {
             updateModal.removeEventListener("show.bs.modal", showModalHandler);
         };
@@ -29,7 +28,6 @@ export const EditModal = () => {
         data.id = currentModalId;
         data.note = document.getElementById("message-text").value;
 
-        console.log(data.note);
         const request = await fetch("http://localhost:8080/api/notes", {
             method: "PATCH",
             headers: {
@@ -39,7 +37,16 @@ export const EditModal = () => {
             body: JSON.stringify(data),
         });
 
-        location.reload();
+        setNotes((prevNotes) =>
+            prevNotes.map((current) =>
+                current.id === currentModalId
+                    ? { ...current, note: data.note }
+                    : current
+            )
+        );
+
+        console.log(notes);
+        alert("Edited successfully");
     };
 
     return (
@@ -90,6 +97,7 @@ export const EditModal = () => {
                         <button
                             type="button"
                             className="btn btn-primary"
+                            data-bs-dismiss="modal"
                             onClick={updateNote}
                         >
                             Edit!
