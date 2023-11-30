@@ -6,4 +6,4 @@ Versions of every framework/langueage used:
 * Apache Maven 3.9.5 (57804ffe001d7215b5e7bcb531cf83df38f93546)
 * Node Package Manager (NPM) 9.5.1
 * Spring Boot 3.2.0
-* **XAMPP**: Make sure to have MYSQL and Apache services installed and running.
+* **XAMPP v3.3.0**: Make sure to have MYSQL and Apache services installed and running.
